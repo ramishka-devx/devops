@@ -1,0 +1,24 @@
+version: "3.8"
+services:
+  frontend:
+    build: ./client
+    container_name: frontend_c
+    ports:
+      - "5173:5173"
+
+  backend:
+    build: ./api
+    container_name: backend_c
+    ports:
+      - "4000:4000"
+    stdin_open: true
+    tty: true
+    environment:
+      - PORT=4000
+      - DB_HOST=ewinners.lk
+      - DB_USER=ewinners_devx
+      - DB_PASSWORD=Geenath20715###
+      - DB_NAME=ewinners_hacktrack
+      - DB_PORT=3306
+      - JWT_SECRET=your_jwt_secret
+    depends_on: []  # no MySQL container now

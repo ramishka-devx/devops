@@ -5,6 +5,13 @@ services:
     container_name: frontend_c
     ports:
       - "5173:5173"
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - NODE_ENV=development
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    command: ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "5173"]
 
   backend:
     build: ./api
@@ -15,10 +22,50 @@ services:
     tty: true
     environment:
       - PORT=4000
-      - DB_HOST=ewinners.lk
-      - DB_USER=ewinners_devx
-      - DB_PASSWORD=Geenath20715###
+      - DB_HOST=db
+      - DB_USER=appuser
+      - DB_PASSWORD=apppassword
       - DB_NAME=ewinners_hacktrack
       - DB_PORT=3306
       - JWT_SECRET=your_jwt_secret
-    depends_on: []  # no MySQL container now
+      - NODE_ENV=development
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./api:/app
+      - /app/node_modules
+    command: ["npm", "run", "dev", "--", "-L"]
+
+  db:
+    image: mysql:8.0
+    container_name: db_c
+    restart: unless-stopped
+    ports:
+      - "3306:3306" # optional: expose to host for direct access
+    environment:
+      - MYSQL_ROOT_PASSWORD=localrootpwd
+      - MYSQL_DATABASE=ewinners_hacktrack
+      - MYSQL_USER=appuser
+      - MYSQL_PASSWORD=apppassword
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./api/db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  adminer:
+    image: adminer:4
+    container_name: adminer_c
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+volumes:
+  db_data:

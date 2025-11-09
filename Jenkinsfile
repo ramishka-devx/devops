@@ -37,6 +37,7 @@ pipeline {
                     sh """
                     ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} '
                         cd ${REMOTE_APP_DIR} && \
+                        git fetch && \
                         git pull && \
                         cd backend && npm install --production && \
                         cd ../frontend && npm install && npm run build && \

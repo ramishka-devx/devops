@@ -49,7 +49,7 @@ const Login = () => {
           className="w-24 h-24 rounded-3xl shadow-md mb-4"
         />
         <h1 className="text-green-700 font-bold text-4xl leading-tight">
-          Welcome to <span className="text-green-800">Bio Tutor</span>
+          Welcome too <span className="text-green-800">Bio Tutor</span>
         </h1>
         <p className="text-gray-600 mt-3 text-lg leading-relaxed">
           Start your journey with expert tutors and advanced resources. Let’s

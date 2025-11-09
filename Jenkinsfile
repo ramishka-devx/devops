@@ -32,22 +32,37 @@ pipeline {
         }
 
         stage('Deploy to Lightsail') {
-            steps {
-                sshagent (credentials: ['lightsail-ssh']) {
-                    sh """
-                    ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} '
-                        cd ${REMOTE_APP_DIR} && \
-                        git fetch && \
-                        git pull && \
-                        cd backend && npm install --production && \
-                        cd ../frontend && npm install && npm run build && \
-                        pm2 restart lms-api || pm2 start app.js --name lms-api --update-env && \
-                        pm2 restart lms-client || pm2 start "npm run preview -- --host 0.0.0.0 --port 5173" --name lms-client --update-env && \
-                        pm2 save
-                    '
-                    """
-                }
-            }
+    steps {
+        sshagent (credentials: ['lightsail-ssh']) {
+            sh """
+            ssh -o StrictHostKeyChecking=no ubuntu@13.250.115.24 '
+                set -e
+
+                cd /home/ubuntu/lms/devops
+                git pull
+
+                # Backend: api
+                cd api
+                npm install --production
+
+                # Frontend: client (Vite)
+                cd ../client
+                npm install
+                npm run build
+
+                # Restart backend API
+                pm2 restart lms-api || pm2 start app.js --name lms-api --update-env
+
+                # Restart frontend client (port 5173)
+                pm2 restart lms-client || pm2 start "npm run preview -- --host 0.0.0.0 --port 5173" --name lms-client --update-env
+
+                # Save PM2 process list
+                pm2 save
+            '
+            """
         }
+    }
+}
+
     }
 }

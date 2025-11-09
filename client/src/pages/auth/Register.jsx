@@ -3,6 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import Logo from "../../assets/logo.jpg"; // replace with your logo
 import toast from "react-hot-toast";
 
+// Use Vite env var if provided; fallback to localhost for dev
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
+
 const Register = () => {
   const [formData, setFormData] = useState({
     username: "",
@@ -28,7 +31,7 @@ const Register = () => {
 
     setIsLoading(true);
     try {
-      const res = await fetch("http://localhost:4000/api/users/register", {
+  const res = await fetch(`${API_BASE}/api/users/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

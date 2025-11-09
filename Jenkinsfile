@@ -5,6 +5,8 @@ pipeline {
         REMOTE_USER    = 'ubuntu'
         REMOTE_HOST    = '13.250.115.24'
         REMOTE_APP_DIR = '/home/ubuntu/lms/devops'
+        // Server base URL for API (used to set VITE_API_BASE_URL during frontend builds)
+        SERVER_BASE_URL = 'http://13.250.115.24:4000'
     }
 
     stages {
@@ -26,7 +28,8 @@ pipeline {
             steps {
                 dir('client') {
                     sh 'npm install'
-                    sh 'npm run build'
+                    // Set VITE_API_BASE_URL at build time so Vite will bake it into the production bundle
+                    sh "VITE_API_BASE_URL=${SERVER_BASE_URL} npm run build"
                 }
             }
         }
@@ -48,7 +51,8 @@ pipeline {
                 # Frontend: client (Vite)
                 cd ../client
                 npm install
-                npm run build
+                # Pass the server base URL to the remote build so the built frontend points to the correct API
+                VITE_API_BASE_URL=${SERVER_BASE_URL} npm run build
 
                 # Restart backend API
                 pm2 restart lms-api || pm2 start app.js --name lms-api --update-env

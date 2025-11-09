@@ -3,6 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import Logo from "../../assets/logo.jpg"; // replace with your logo
 
+// Use Vite env var if provided; fallback to localhost for dev
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
+
 const Profile = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -17,7 +20,7 @@ const Profile = () => {
       }
 
       try {
-        const res = await fetch("http://localhost:4000/api/users/me", {
+        const res = await fetch(`${API_BASE}/api/users/me`, {
           headers: { Authorization: `Bearer ${token}` }
         });
 

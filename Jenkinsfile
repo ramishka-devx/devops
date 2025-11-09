@@ -16,7 +16,7 @@ pipeline {
 
         stage('Backend - Install & Test') {
             steps {
-                dir('backend') {
+                dir('api') {
                     sh 'npm install'
                 }
             }
@@ -24,7 +24,7 @@ pipeline {
 
         stage('Frontend - Install & Build') {
             steps {
-                dir('frontend') {
+                dir('client') {
                     sh 'npm install'
                     sh 'npm run build'
                 }

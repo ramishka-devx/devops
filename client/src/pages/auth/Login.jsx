@@ -53,7 +53,7 @@ const Login = () => {
         </h1>
         <p className="text-gray-600 mt-3 text-lg leading-relaxed">
           Start your journey with expert tutors and advanced resources. Let’s
-          make learning both effective and enjoyable!
+          make learning both effective and enjoyable!!!!
         </p>
       </div>
 

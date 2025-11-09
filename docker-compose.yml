@@ -1,6 +1,7 @@
 version: "3.8"
 services:
   frontend:
+    image: ramishka-devx/project-frontend:dev
     build: ./client
     container_name: frontend_c
     ports:
@@ -15,6 +16,7 @@ services:
 
   backend:
     build: ./api
+    image: ramishka-devx/project-backend:dev
     container_name: backend_c
     ports:
       - "4000:4000"

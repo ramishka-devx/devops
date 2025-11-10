@@ -1,0 +1,13 @@
+meta {
+  name: Admin - List Courses
+  type: http
+  seq: 6
+}
+
+request {
+  method: GET
+  url: http://localhost:4000/api/admin/courses
+  headers: {
+    Authorization: "Bearer {{admin_token}}"
+  }
+}

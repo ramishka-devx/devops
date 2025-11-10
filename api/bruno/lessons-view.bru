@@ -1,0 +1,13 @@
+meta {
+  name: Lessons - View (paid)
+  type: http
+  seq: 11
+}
+
+request {
+  method: GET
+  url: http://localhost:4000/api/lessons?monthId={{month_id}}
+  headers: {
+    Authorization: "Bearer {{token}}"
+  }
+}

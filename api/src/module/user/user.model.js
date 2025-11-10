@@ -2,11 +2,11 @@
 const pool = require('../../../db/index.js');
 
 class User {
-  static async create({ username, email, password }) {
-    const sql = 'INSERT INTO users (username, email, password) VALUES (?, ?, ?)';
-    const params = [username, email, password];
+  static async create({ username, email, password, role = 'student' }) {
+    const sql = 'INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)';
+    const params = [username, email, password, role];
     const [result] = await pool.execute(sql, params);
-    return result;
+    return { user_id: result.insertId, username, email, role };
   }
 
   static async findByEmail(email) {

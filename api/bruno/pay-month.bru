@@ -1,0 +1,13 @@
+meta {
+  name: Pay For Month
+  type: http
+  seq: 10
+}
+
+request {
+  method: POST
+  url: http://localhost:4000/api/payments/months/{{month_id}}
+  headers: {
+    Authorization: "Bearer {{token}}"
+  }
+}

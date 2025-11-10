@@ -1,0 +1,13 @@
+meta {
+  name: Months - List (course)
+  type: http
+  seq: 9
+}
+
+request {
+  method: GET
+  url: http://localhost:4000/api/courses/{{course_id}}/months
+  headers: {
+    Authorization: "Bearer {{token}}"
+  }
+}

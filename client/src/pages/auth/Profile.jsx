@@ -49,7 +49,7 @@ const Profile = () => {
 
   if (loading) {
     return (
-      <section className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+      <section className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100">
         <div className="flex flex-col items-center text-center mb-8">
           <img src={Logo} alt="logo" className="w-20 h-20 rounded-full" />
           <h1 className="text-green-700 font-bold text-3xl mt-4">
@@ -73,7 +73,7 @@ const Profile = () => {
   }
 
   return (
-    <section className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+    <section className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100">
       <div className="flex flex-col items-center text-center mb-8">
         <img src={Logo} alt="logo" className="w-20 h-20 rounded-full" />
         <h1 className="text-green-700 font-bold text-3xl mt-4">

@@ -1,0 +1,22 @@
+meta {
+  name: Admin - Create Course
+  type: http
+  seq: 5
+}
+
+request {
+  method: POST
+  url: http://localhost:4000/api/admin/courses
+  headers: {
+    Content-Type: "application/json"
+    Authorization: "Bearer {{admin_token}}"
+  }
+  body: json
+  json: """
+  {
+    "title": "Biology Fundamentals",
+    "description": "Introductory biology course",
+    "cover": "https://example.com/cover.png"
+  }
+  """
+}

@@ -1,16 +1,5 @@
--- Users table for LMS authentication (MySQL syntax)
-CREATE TABLE IF NOT EXISTS users (
-  user_id INT AUTO_INCREMENT PRIMARY KEY,
-  username VARCHAR(50) NOT NULL UNIQUE,
-  email VARCHAR(100) NOT NULL UNIQUE,
-  password VARCHAR(255) NOT NULL,
-  role ENUM('student','admin') NOT NULL DEFAULT 'student',
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- Add role column if the table already existed without it (MySQL 8+ supports IF NOT EXISTS)
--- Conditional add of role column (MySQL before 8.0.29 lacks ADD COLUMN IF NOT EXISTS)
--- Safe pattern: check INFORMATION_SCHEMA then perform ALTER.
+-- Run this manually on existing databases to add new LMS structures
+-- Conditional add of role column compatible with older MySQL 8 versions
 SET @missing_role := (
   SELECT COUNT(*) = 0 FROM INFORMATION_SCHEMA.COLUMNS
   WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'users' AND COLUMN_NAME = 'role'
@@ -18,7 +7,6 @@ SET @missing_role := (
 SET @ddl := IF(@missing_role, 'ALTER TABLE users ADD COLUMN role ENUM("student","admin") NOT NULL DEFAULT "student"', 'SELECT 1');
 PREPARE stmt FROM @ddl; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
--- Courses table
 CREATE TABLE IF NOT EXISTS courses (
   course_id INT AUTO_INCREMENT PRIMARY KEY,
   title VARCHAR(150) NOT NULL,
@@ -28,7 +16,6 @@ CREATE TABLE IF NOT EXISTS courses (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Course months (modules)
 CREATE TABLE IF NOT EXISTS course_months (
   month_id INT AUTO_INCREMENT PRIMARY KEY,
   course_id INT NOT NULL,
@@ -43,7 +30,6 @@ CREATE TABLE IF NOT EXISTS course_months (
   UNIQUE KEY uniq_course_month (course_id, month_index)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Lessons under each month
 CREATE TABLE IF NOT EXISTS lessons (
   lesson_id INT AUTO_INCREMENT PRIMARY KEY,
   month_id INT NOT NULL,
@@ -58,7 +44,6 @@ CREATE TABLE IF NOT EXISTS lessons (
     ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Payments / access table: which user has access to which month
 CREATE TABLE IF NOT EXISTS payments (
   payment_id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
@@ -74,5 +59,3 @@ CREATE TABLE IF NOT EXISTS payments (
   CONSTRAINT fk_payment_month FOREIGN KEY (month_id) REFERENCES course_months(month_id) ON DELETE CASCADE,
   UNIQUE KEY uniq_user_month (user_id, month_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- Note: For existing volumes where init scripts have already run, apply the above ALTER/CREATE statements manually.

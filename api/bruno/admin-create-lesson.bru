@@ -1,0 +1,22 @@
+meta {
+  name: Admin - Create Lesson
+  type: http
+  seq: 8
+}
+
+request {
+  method: POST
+  url: http://localhost:4000/api/admin/months/{{month_id}}/lessons
+  headers: {
+    Content-Type: "application/json"
+    Authorization: "Bearer {{admin_token}}"
+  }
+  body: json
+  json: """
+  {
+    "title": "Cell Structure Overview",
+    "content_url": "https://example.com/video.mp4",
+    "display_order": 1
+  }
+  """
+}

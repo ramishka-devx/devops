@@ -18,7 +18,7 @@ pipeline {
         stage('Build Backend') {
             steps {
                 sh '''
-                docker build -t $BACKEND_IMAGE:latest ./backend
+                docker build -t $BACKEND_IMAGE:latest ./api
                 '''
             }
         }
@@ -26,7 +26,7 @@ pipeline {
         stage('Build Frontend') {
             steps {
                 sh '''
-                docker build -t $FRONTEND_IMAGE:latest ./frontend
+                docker build -t $FRONTEND_IMAGE:latest ./client
                 '''
             }
         }

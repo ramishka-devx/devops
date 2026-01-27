@@ -4,39 +4,27 @@ pipeline {
     environment {
         BACKEND_IMAGE = "ramishkathennakoon/devops-backend"
         FRONTEND_IMAGE = "ramishkathennakoon/devops-frontend"
-        DOCKER_CREDS = credentials('dockerhub-creds')
     }
 
     stages {
-
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
         stage('Build Backend') {
             steps {
-                sh '''
-                docker build -t $BACKEND_IMAGE:latest ./api
-                '''
+                sh 'docker build -t $BACKEND_IMAGE:latest ./api'
             }
         }
 
         stage('Build Frontend') {
             steps {
-                sh '''
-                docker build -t $FRONTEND_IMAGE:latest ./client
-                '''
+                sh 'docker build -t $FRONTEND_IMAGE:latest ./client'
             }
         }
 
         stage('Login to DockerHub') {
+            environment {
+                DOCKER_CREDS = credentials('dockerhub-creds')
+            }
             steps {
-                sh '''
-                echo $DOCKER_CREDS_PSW | docker login \
-                -u $DOCKER_CREDS_USR --password-stdin
-                '''
+                sh 'echo $DOCKER_CREDS_PSW | docker login -u $DOCKER_CREDS_USR --password-stdin'
             }
         }
 

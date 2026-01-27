@@ -2,20 +2,20 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds')
         BACKEND_IMAGE = "ramishkathennakoon/devops-backend"
         FRONTEND_IMAGE = "ramishkathennakoon/devops-frontend"
+        DOCKER_CREDS = credentials('dockerhub-creds')
     }
 
     stages {
 
-        stage('Clone Repo') {
+        stage('Checkout') {
             steps {
                 checkout scm
             }
         }
 
-        stage('Build Backend Image') {
+        stage('Build Backend') {
             steps {
                 sh '''
                 docker build -t $BACKEND_IMAGE:latest ./backend
@@ -23,7 +23,7 @@ pipeline {
             }
         }
 
-        stage('Build Frontend Image') {
+        stage('Build Frontend') {
             steps {
                 sh '''
                 docker build -t $FRONTEND_IMAGE:latest ./frontend
@@ -34,8 +34,8 @@ pipeline {
         stage('Login to DockerHub') {
             steps {
                 sh '''
-                echo $DOCKERHUB_CREDENTIALS_PSW | docker login \
-                -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
+                echo $DOCKER_CREDS_PSW | docker login \
+                -u $DOCKER_CREDS_USR --password-stdin
                 '''
             }
         }

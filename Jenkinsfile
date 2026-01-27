@@ -9,13 +9,13 @@ pipeline {
     stages {
         stage('Build Backend') {
             steps {
-                sh 'docker build --network=host -t $BACKEND_IMAGE:latest ./api'
+                sh 'docker build --dns 8.8.8.8 -t $BACKEND_IMAGE:latest ./api'
             }
         }
 
         stage('Build Frontend') {
             steps {
-                sh 'docker build --network=host -t $FRONTEND_IMAGE:latest ./client'
+                sh 'docker build --dns 8.8.8.8 -t $FRONTEND_IMAGE:latest ./client'
             }
         }
 

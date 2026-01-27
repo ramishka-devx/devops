@@ -1,17 +1,15 @@
-FROM node:22-alpine
+FROM node:22-slim
 WORKDIR /app
- 
-# Fix esbuild/react dev issues on Alpine (musl) by providing glibc compatibility
-RUN apk add --no-cache libc6-compat
 
-# Use deterministic installs when lockfile is present
+# Copy package files
 COPY package*.json ./
-RUN set -eux; \
-	if [ -f package-lock.json ]; then npm ci; else npm install; fi; \
-	# Ensure esbuild native binary matches the JS host version
-	npm rebuild esbuild || true
 
-# Copy the rest of the app sources
+# Install dependencies
+RUN set -eux; \
+    if [ -f package-lock.json ]; then npm ci; else npm install; fi; \
+    npm rebuild esbuild || true
+
+# Copy source
 COPY . .
 
 EXPOSE 5173

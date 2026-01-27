@@ -15,6 +15,7 @@ pipeline {
 
         stage('Build Frontend') {
             steps {
+                
                 sh 'docker build --network=host -t $FRONTEND_IMAGE:latest ./client'
             }
         }

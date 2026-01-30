@@ -53,6 +53,7 @@ pipeline {
                         docker pull $BACKEND_IMAGE:latest &&
                         docker pull $FRONTEND_IMAGE:latest &&
                         docker-compose down &&
+                        docker rm -f db || true &&
                         docker-compose up -d
                     "
                     """

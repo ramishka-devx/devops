@@ -14,6 +14,12 @@ class User {
     const [rows] = await pool.execute(sql, [email]);
     return rows;
   }
+
+  static async findById(user_id) {
+    const sql = 'SELECT user_id, username, email, role, created_at FROM users WHERE user_id = ?';
+    const [rows] = await pool.execute(sql, [user_id]);
+    return rows;
+  }
 }
 
 module.exports = User;

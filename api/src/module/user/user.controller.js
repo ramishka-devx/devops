@@ -3,18 +3,16 @@ const UserService = require('./user.service');
 
 exports.register = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
-    const user = await UserService.register({ username, email, password });
+    const user = await UserService.register(req.body);
     res.status(201).json({ message: 'User registered', user });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    throw err;
   }
 };
 
 exports.login = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    const result = await UserService.login({ email, password });
+    const result = await UserService.login(req.body);
     if (result.success) {
       res.status(200).json({
         message: result.message,
@@ -22,20 +20,18 @@ exports.login = async (req, res) => {
         token: result.token
       });
     } else {
-      res.status(401).json({ error: result.message });
+      throw new Error(result.message);
     }
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    throw err;
   }
 };
 
 exports.getMe = async (req, res) => {
   try {
-    const token = req.headers.authorization?.split(' ')[1];
-    if (!token) return res.status(401).json({ error: 'No token provided' });
-    const user = await UserService.getMe(token);
+    const user = await UserService.getMe(req.user.user_id);
     res.status(200).json({ user });
   } catch (err) {
-    res.status(401).json({ error: err.message });
+    throw err;
   }
 };

@@ -1,5 +1,6 @@
 const express = require('express');
 const { requireAuth, requireRole } = require('../../middleware/auth');
+const validate = require('../../middleware/validate');
 const ctrl = require('./course.controller');
 const router = express.Router();
 
@@ -22,17 +23,56 @@ router.get('/courses/:courseId/months', (req, res, next) => {
 router.get('/lessons', requireAuth, ctrl.listLessonsForMonth);
 
 // Admin routes
-router.post('/admin/courses', requireAuth, requireRole('admin'), ctrl.createCourse);
+router.post('/admin/courses', requireAuth, requireRole('admin'), validate({
+  title: { required: true, type: 'string', minLength: 1, maxLength: 150 },
+  description: { type: 'string', maxLength: 1000 },
+  cover: { type: 'string', maxLength: 255 },
+  is_published: { type: 'number' }
+}), ctrl.createCourse);
+
 router.get('/admin/courses', requireAuth, requireRole('admin'), ctrl.listCoursesAdmin);
-router.patch('/admin/courses/:courseId', requireAuth, requireRole('admin'), ctrl.updateCourse);
+
+router.patch('/admin/courses/:courseId', requireAuth, requireRole('admin'), validate({
+  title: { type: 'string', minLength: 1, maxLength: 150 },
+  description: { type: 'string', maxLength: 1000 },
+  cover: { type: 'string', maxLength: 255 },
+  is_published: { type: 'number' }
+}), ctrl.updateCourse);
+
 router.delete('/admin/courses/:courseId', requireAuth, requireRole('admin'), ctrl.deleteCourse);
 
-router.post('/admin/courses/:courseId/months', requireAuth, requireRole('admin'), ctrl.createMonth);
-router.patch('/admin/months/:monthId', requireAuth, requireRole('admin'), ctrl.updateMonth);
+router.post('/admin/courses/:courseId/months', requireAuth, requireRole('admin'), validate({
+  title: { required: true, type: 'string', minLength: 1, maxLength: 150 },
+  month_index: { required: true, type: 'number' },
+  price: { type: 'number' },
+  is_published: { type: 'number' }
+}), ctrl.createMonth);
+
+router.patch('/admin/months/:monthId', requireAuth, requireRole('admin'), validate({
+  title: { type: 'string', minLength: 1, maxLength: 150 },
+  month_index: { type: 'number' },
+  price: { type: 'number' },
+  is_published: { type: 'number' }
+}), ctrl.updateMonth);
+
 router.delete('/admin/months/:monthId', requireAuth, requireRole('admin'), ctrl.deleteMonth);
 
-router.post('/admin/months/:monthId/lessons', requireAuth, requireRole('admin'), ctrl.createLesson);
-router.patch('/admin/lessons/:lessonId', requireAuth, requireRole('admin'), ctrl.updateLesson);
+router.post('/admin/months/:monthId/lessons', requireAuth, requireRole('admin'), validate({
+  title: { required: true, type: 'string', minLength: 1, maxLength: 200 },
+  content_url: { type: 'string', maxLength: 500 },
+  content: { type: 'string' },
+  display_order: { type: 'number' },
+  is_published: { type: 'number' }
+}), ctrl.createLesson);
+
+router.patch('/admin/lessons/:lessonId', requireAuth, requireRole('admin'), validate({
+  title: { type: 'string', minLength: 1, maxLength: 200 },
+  content_url: { type: 'string', maxLength: 500 },
+  content: { type: 'string' },
+  display_order: { type: 'number' },
+  is_published: { type: 'number' }
+}), ctrl.updateLesson);
+
 router.delete('/admin/lessons/:lessonId', requireAuth, requireRole('admin'), ctrl.deleteLesson);
 
 module.exports = router;

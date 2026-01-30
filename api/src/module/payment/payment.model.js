@@ -15,9 +15,27 @@ class Payment {
     return rows[0];
   }
 
+  static async findByUser(user_id) {
+    const [rows] = await pool.execute('SELECT * FROM payments WHERE user_id = ? AND status = "paid"', [user_id]);
+    return rows;
+  }
+
   static async userPaidMonths(user_id) {
     const [rows] = await pool.execute('SELECT month_id FROM payments WHERE user_id = ? AND status = "paid"', [user_id]);
     return rows.map(r => r.month_id);
+  }
+
+  static async getEnrollmentCountsForCourse(course_id) {
+    const [rows] = await pool.execute(`
+      SELECT month_id, COUNT(*) as enrollment_count 
+      FROM payments 
+      WHERE course_id = ? AND status = "paid" 
+      GROUP BY month_id
+    `, [course_id]);
+    return rows.reduce((acc, row) => {
+      acc[row.month_id] = row.enrollment_count;
+      return acc;
+    }, {});
   }
 }
 

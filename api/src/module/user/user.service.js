@@ -31,14 +31,9 @@ exports.login = async ({ email, password }) => {
   };
 };
 
-exports.getMe = async (token) => {
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const users = await User.findByEmail(decoded.email);
-    if (!users.length) throw new Error('User not found');
-    const user = users[0];
-    return { user_id: user.user_id, username: user.username, email: user.email, role: user.role || 'student' };
-  } catch (err) {
-    throw new Error('Invalid token');
-  }
+exports.getMe = async (userId) => {
+  const users = await User.findById(userId);
+  if (!users.length) throw new Error('User not found');
+  const user = users[0];
+  return { user_id: user.user_id, username: user.username, email: user.email, role: user.role || 'student' };
 };

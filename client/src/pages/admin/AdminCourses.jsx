@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { apiGet, apiPost, apiPatch, apiDelete } from '../../lib/api';
 import toast from 'react-hot-toast';
 import Modal from '../../components/Modal';
+import { useState, useEffect } from 'react';
 
 export default function AdminCourses() {
   const [courses, setCourses] = useState([]);
@@ -92,7 +93,10 @@ export default function AdminCourses() {
                 <span className="px-2 py-0.5 rounded-full bg-gray-50 text-gray-600 border border-gray-300">ID {c.course_id}</span>
               </div>
               <div className="flex gap-2 mt-2">
-                <button onClick={()=>openEdit(c)} className="flex-1 px-3 py-1.5 bg-green-600 text-white rounded text-sm">Edit</button>
+                <Link to={`/admin/courses/${c.course_id}/months`} className="flex-1 px-3 py-1.5 bg-blue-600 text-white rounded text-sm text-center hover:bg-blue-700">
+                  Manage Months
+                </Link>
+                <button onClick={()=>openEdit(c)} className="px-3 py-1.5 bg-green-600 text-white rounded text-sm">Edit</button>
                 <button onClick={()=>remove(c)} disabled={loading} className="px-3 py-1.5 bg-red-600 text-white rounded text-sm disabled:opacity-60">Delete</button>
               </div>
             </div>
@@ -115,15 +119,15 @@ export default function AdminCourses() {
         <form id="createCourseForm" onSubmit={create} className="space-y-4">
           <div>
             <label className="text-sm font-medium text-gray-700">Title</label>
-            <input required value={createForm.title} onChange={e=>setCreateForm({...createForm, title:e.target.value})} className="mt-1 w-full border p-2 rounded" placeholder="Course title" />
+            <input required value={createForm.title} onChange={e=>setCreateForm({...createForm, title:e.target.value})} className="mt-1 w-full border border-gray-300 p-2 rounded" placeholder="Course title" />
           </div>
           <div>
             <label className="text-sm font-medium text-gray-700">Description</label>
-            <textarea value={createForm.description} onChange={e=>setCreateForm({...createForm, description:e.target.value})} className="mt-1 w-full border p-2 rounded min-h-[90px]" placeholder="Optional description" />
+            <textarea value={createForm.description} onChange={e=>setCreateForm({...createForm, description:e.target.value})} className="mt-1 w-full border border-gray-300 p-2 rounded min-h-[90px]" placeholder="Optional description" />
           </div>
             <div>
             <label className="text-sm font-medium text-gray-700">Cover URL</label>
-            <input value={createForm.cover} onChange={e=>setCreateForm({...createForm, cover:e.target.value})} className="mt-1 w-full border p-2 rounded" placeholder="https://..." />
+            <input value={createForm.cover} onChange={e=>setCreateForm({...createForm, cover:e.target.value})} className="mt-1 w-full border border-gray-300 p-2 rounded" placeholder="https://..." />
           </div>
         </form>
       </Modal>

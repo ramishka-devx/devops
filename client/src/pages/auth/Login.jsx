@@ -1,10 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
+import { apiPost } from "../../lib/api";
 import Logo from "../../assets/logo.jpg"; // replace with your logo
-
-// Use Vite env var if provided; fallback to localhost for dev
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -20,23 +18,15 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-  const res = await fetch(`${API_BASE}/api/users/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        toast.success("Login successful!");
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
-        navigate("/profile")
-      } else {
-        toast.error(data.error || "Invalid email or password.");
-      }
-    } catch {
-      toast.error("Network error. Please try again.");
+      const data = await apiPost('/api/users/login', formData);
+      toast.success("Login successful!");
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      // Dispatch custom event to update navbar
+      window.dispatchEvent(new Event('userChange'));
+      navigate("/profile");
+    } catch (error) {
+      toast.error(error.message || "Invalid email or password.");
     } finally {
       setIsLoading(false);
     }

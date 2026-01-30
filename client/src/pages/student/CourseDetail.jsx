@@ -52,7 +52,7 @@ export default function CourseDetail() {
   return (
     <div className="max-w-5xl mx-auto p-6">
       {/* Header with cover image */}
-      <div className="bg-white border rounded-xl overflow-hidden shadow-sm mb-6 grid md:grid-cols-3">
+      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm mb-6 grid md:grid-cols-3">
         <div className="md:col-span-1 h-56 md:h-auto bg-gray-100">
           {/* eslint-disable-next-line jsx-a11y/img-redundant-alt */}
           <img src={coverSrc} alt="Course cover image" className="w-full h-full object-cover" />
@@ -83,16 +83,16 @@ export default function CourseDetail() {
       <h2 className="text-2xl font-semibold text-green-800 mb-3">Modules</h2>
       <div className="space-y-3">
         {months.map(m => (
-          <div key={m.month_id} className="bg-white border rounded-lg p-4 flex items-center justify-between">
+          <div key={m.month_id} className="bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-between">
             <div>
               <div className="font-semibold text-green-800">{m.title}</div>
-              <div className="text-sm text-gray-600">Month {m.month_index} • ${Number(m.price).toFixed(2)}</div>
+              <div className="text-sm text-gray-600">Month {m.month_index} • LKR {Number(m.price).toFixed(2)}</div>
             </div>
             <div className="flex gap-2">
               {m.is_paid ? (
                 <Link to={`/lessons?monthId=${m.month_id}`} className="px-4 py-2 bg-green-600 text-white rounded-lg">View Lessons</Link>
               ) : (
-                <button onClick={() => handlePay(m)} className="px-4 py-2 bg-green-600 text-white rounded-lg">Pay & Unlock</button>
+                <button onClick={() => handlePay(m)} className="px-4 py-2 bg-green-600 text-white rounded-lg">Enroll</button>
               )}
             </div>
           </div>

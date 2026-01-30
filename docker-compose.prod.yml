@@ -1,0 +1,49 @@
+version: "3.8"
+
+services:
+  backend:
+    image: ramishka-devx/project-backend:latest
+    container_name: backend
+    restart: always
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+      - DB_HOST=db
+      - DB_USER=appuser
+      - DB_PASSWORD=apppassword
+      - DB_NAME=ewinners_hacktrack
+      - JWT_SECRET=your_jwt_secret
+      - NODE_ENV=production
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    image: ramishka-devx/project-frontend:latest
+    container_name: frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+  db:
+    image: mysql:8.0
+    container_name: db
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=localrootpwd
+      - MYSQL_DATABASE=ewinners_hacktrack
+      - MYSQL_USER=appuser
+      - MYSQL_PASSWORD=apppassword
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  db_data:

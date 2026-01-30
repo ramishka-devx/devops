@@ -44,28 +44,20 @@ pipeline {
             }
         }
 
-            stage('Deploy to Server') {
-                steps {
-                    sshagent(['server-ssh-key']) {
-                        sh '''
-            ssh -o StrictHostKeyChecking=no root@64.225.85.179 << 'EOF'
-            mkdir -p /root/devops-app
-            cd /root/devops-app
-            
-            docker pull ramishkathennakoon/devops-backend:latest
-            docker pull ramishkathennakoon/devops-frontend:latest
-            
-            docker-compose down
-            docker-compose up -d
-            EOF
-            '''
+        stage('Deploy to Server') {
+            steps {
+                sshagent(['server-ssh-key']) {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP << EOF
+                        cd $APP_DIR
+                        docker pull $BACKEND_IMAGE:latest
+                        docker pull $FRONTEND_IMAGE:latest
+                        docker-compose down
+                        docker-compose up -d
+                    EOF
+                    """
+                }
+            }
         }
-    }
-}
-
-        }
-    }
-}
-
     }
 }

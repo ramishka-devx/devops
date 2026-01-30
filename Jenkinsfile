@@ -6,7 +6,7 @@ pipeline {
         FRONTEND_IMAGE = "ramishkathennakoon/devops-frontend"
         SERVER_USER = "root"
         SERVER_IP = "64.225.85.179"
-        APP_DIR = "/root/devops-app"
+        APP_DIR = "/opt/app"
     }
 
     stages {
@@ -52,8 +52,8 @@ pipeline {
                         cd $APP_DIR
                         docker pull $BACKEND_IMAGE:latest
                         docker pull $FRONTEND_IMAGE:latest
-                        docker compose down
-                        docker compose up -d
+                        docker-compose down
+                        docker-compose up -d
                     EOF
                     """
                 }

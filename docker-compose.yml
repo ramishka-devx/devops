@@ -1,9 +1,9 @@
 version: "3.8"
+
 services:
   frontend:
     image: ramishka-devx/project-frontend:dev
     build: ./client
-    container_name: frontend_c
     ports:
       - "5173:5173"
     environment:
@@ -15,9 +15,8 @@ services:
     command: ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "5173"]
 
   backend:
-    build: ./api
     image: ramishka-devx/project-backend:dev
-    container_name: backend_c
+    build: ./api
     ports:
       - "4000:4000"
     stdin_open: true
@@ -41,10 +40,9 @@ services:
 
   db:
     image: mysql:8.0
-    container_name: db_c
     restart: unless-stopped
     ports:
-      - "3306:3306" # optional: expose to host for direct access
+      - "3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=localrootpwd
       - MYSQL_DATABASE=ewinners_hacktrack
@@ -62,7 +60,6 @@ services:
 
   adminer:
     image: adminer:4
-    container_name: adminer_c
     restart: unless-stopped
     ports:
       - "8081:8080"

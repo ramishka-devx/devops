@@ -70,7 +70,8 @@ pipeline {
                         docker pull $FRONTEND_IMAGE:$IMAGE_TAG &&
 
                         docker-compose down &&
-                        docker-compose up -d
+                        docker rm -f db || true &&
+                        docker-compose up  -d --build
                     "
                     """
                 }

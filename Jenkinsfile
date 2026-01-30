@@ -28,6 +28,7 @@ pipeline {
             steps {
                 sh '''
                 docker build --no-cache \
+                    --build-arg VITE_API_BASE_URL=http://64.225.85.179:4000 \
                     -t $FRONTEND_IMAGE:$IMAGE_TAG \
                     ./client
                 '''

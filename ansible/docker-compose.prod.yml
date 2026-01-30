@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   backend:
-    image: ramishka-devx/project-backend:latest
+    image: ramishkathennakoon/devops-backend:latest
     container_name: backend
     restart: always
     ports:
@@ -20,7 +20,7 @@ services:
         condition: service_healthy
 
   frontend:
-    image: ramishka-devx/project-frontend:latest
+    image: ramishkathennakoon/devops-frontend:latest
     container_name: frontend
     restart: always
     ports:

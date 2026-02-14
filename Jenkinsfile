@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    parameters {
+        booleanParam(name: 'RUN_TERRAFORM', defaultValue: false, description: 'Run Terraform provisioning (VM already created manually)')
+        booleanParam(name: 'RUN_ANSIBLE', defaultValue: false, description: 'Run Ansible deployment (alternative to SSH deploy)')
+    }
+
     environment {
         BACKEND_IMAGE = "ramishkathennakoon/devops-backend"
         FRONTEND_IMAGE = "ramishkathennakoon/devops-frontend"
@@ -13,6 +18,22 @@ pipeline {
     }
 
     stages {
+
+        stage('Terraform - Provision Infrastructure') {
+            when {
+                expression { params.RUN_TERRAFORM == true }
+            }
+            steps {
+                echo "Running Terraform..."
+                dir('infra') {
+                    sh '''
+                    terraform init
+                    terraform plan -out=tfplan
+                    terraform apply tfplan
+                    '''
+                }
+            }
+        }
 
         stage('Build Backend') {
             steps {
@@ -55,6 +76,25 @@ pipeline {
                 docker push $BACKEND_IMAGE:$IMAGE_TAG
                 docker push $FRONTEND_IMAGE:$IMAGE_TAG
                 '''
+            }
+        }
+
+        stage('Ansible - Deploy with Configuration Management') {
+            when {
+                expression { params.RUN_ANSIBLE == true }
+            }
+            steps {
+                echo "Running Ansible playbook..."
+                sshagent(['server-ssh-key']) {
+                    sh '''
+                    cd ansible
+                    ansible-playbook -i inventory \
+                        -e "image_tag=$IMAGE_TAG" \
+                        -e "backend_image=$BACKEND_IMAGE" \
+                        -e "frontend_image=$FRONTEND_IMAGE" \
+                        playbook.yml
+                    '''
+                }
             }
         }
 

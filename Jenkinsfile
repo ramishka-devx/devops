@@ -19,12 +19,36 @@ pipeline {
 
     stages {
 
+        stage('Check Infrastructure') {
+            steps {
+                script {
+                    try {
+                        sshagent(['server-ssh-key']) {
+                            sh '''
+                            ssh -o StrictHostKeyChecking=no \
+                                -o ConnectTimeout=5 \
+                                $SERVER_USER@$SERVER_IP "echo 'Server is reachable'"
+                            '''
+                        }
+                        env.VM_EXISTS = 'true'
+                        echo "✓ VM already exists and is reachable"
+                    } catch (Exception e) {
+                        env.VM_EXISTS = 'false'
+                        echo "✗ VM not reachable - Terraform will run if enabled"
+                    }
+                }
+            }
+        }
+
         stage('Terraform - Provision Infrastructure') {
             when {
-                expression { params.RUN_TERRAFORM == true }
+                allOf {
+                    expression { params.RUN_TERRAFORM == true }
+                    expression { env.VM_EXISTS == 'false' }
+                }
             }
             steps {
-                echo "Running Terraform..."
+                echo "VM not found. Running Terraform..."
                 dir('infra') {
                     sh '''
                     terraform init

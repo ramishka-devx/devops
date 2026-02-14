@@ -18,8 +18,6 @@ pipeline {
             steps {
                 sh '''
                 docker build --no-cache \
-                    --build-arg BUILDKIT_INLINE_CACHE=1 \
-                    --dns 8.8.8.8 --dns 8.8.4.4 \
                     -t $BACKEND_IMAGE:$IMAGE_TAG \
                     ./api
                 '''
@@ -31,7 +29,6 @@ pipeline {
                 sh '''
                 docker build --no-cache \
                     --build-arg VITE_API_BASE_URL=http://64.225.85.179:4000 \
-                    --dns 8.8.8.8 --dns 8.8.4.4 \
                     -t $FRONTEND_IMAGE:$IMAGE_TAG \
                     ./client
                 '''

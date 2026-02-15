@@ -53,7 +53,7 @@ const Login = () => {
       {/* Login Card */}
       <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
         <h2 className="text-2xl font-bold text-green-700 mb-6 text-center">
-          Ramishka In to Your accsss
+          Log In to Your accsss
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-6">
